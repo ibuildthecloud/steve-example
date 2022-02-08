@@ -32,6 +32,9 @@ func run() error {
 	steve, err := server.New(ctx, restConfig, &server.Options{
 		AuthMiddleware: auth.ToMiddleware(auth.AuthenticatorFunc(MyAuth)),
 	})
+	if err != nil {
+		return err
+	}
 
 	// Add some custom stores to add custom logic on CRUD
 	steve.SchemaFactory.AddTemplate(schema.Template{
