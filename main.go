@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/rancher/apiserver/pkg/types"
+	"github.com/rancher/steve/pkg/attributes"
 	"github.com/rancher/steve/pkg/auth"
 	"github.com/rancher/steve/pkg/schema"
 	"github.com/rancher/steve/pkg/server"
@@ -35,6 +36,20 @@ func run() error {
 	if err != nil {
 		return err
 	}
+
+	steve.SchemaFactory.AddTemplate(schema.Template{
+		Group: "",
+		Kind:  "Secret",
+		// Globally disable access to all methods for this type
+		Customize: func(apiSchema *types.APISchema) {
+			attributes.AddDisallowMethods(apiSchema,
+				http.MethodGet,
+				http.MethodPost,
+				http.MethodPut,
+				http.MethodDelete,
+				http.MethodPatch)
+		},
+	})
 
 	// Add some custom stores to add custom logic on CRUD
 	steve.SchemaFactory.AddTemplate(schema.Template{
