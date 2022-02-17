@@ -10,6 +10,7 @@ import (
 	"github.com/rancher/steve/pkg/schema"
 	"github.com/rancher/steve/pkg/server"
 	"github.com/rancher/wrangler/pkg/kubeconfig"
+	"github.com/rancher/wrangler/pkg/ratelimit"
 	"github.com/rancher/wrangler/pkg/signals"
 	"k8s.io/apiserver/pkg/authentication/user"
 )
@@ -28,6 +29,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	restConfig.RateLimiter = ratelimit.None
 
 	// Create steve server (which is a http.Handler) with custom auth
 	steve, err := server.New(ctx, restConfig, &server.Options{
